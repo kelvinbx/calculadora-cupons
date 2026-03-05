@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="pt-pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora De Cupons - Naruto Online</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-image: url('imagens/naruto.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            
+            min-height: 100vh;
+            color: #e2e8f0;
+            position: relative;
+            
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 150%;
+            height: 150%;
+            background: rgba(0, 0, 0, 0.75);
+            z-index: -1;
+        }
+
+        /* Header */
+        .header {
+            background: #2c3e50;
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .lang-switch {
+            display: flex;
+            gap: 10px;
+        }
+
+        .lang-btn {
+            padding: 5px 15px;
+            border: 1px solid rgba(255,255,255,0.3);
+            background: transparent;
+            color: white;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        .lang-btn.active {
+            background: rgba(255,255,255,0.2);
+            font-weight: bold;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            padding: 0 20px;
+        }
+
+        @media (max-width: 900px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Cards */
+        .card {
+            background: #e8e8e8;
+            border-radius: 8px;
+            padding: 25px;
+            border: 1px solid #d0d0d0;
+        }
+
+        /* Input Rows */
+        .input-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: white;
+            padding: 12px 15px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            margin-bottom: 12px;
+        }
+
+        .input-row label {
+            font-weight: 600;
+            color: #555;
+            min-width: 160px;
+            font-size: 0.95rem;
+        }
+
+        .input-row input,
+        .input-row select {
+            flex: 1;
+            border: none;
+            background: transparent;
+            font-size: 1rem;
+            color: #333;
+            outline: none;
+            font-family: inherit;
+        }
+
+        .input-row input[readonly] {
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        /* Tooltip */
+        .tooltip {
+            color: #999;
+            cursor: help;
+            font-size: 1.1rem;
+            position: relative;
+        }
+
+        .tooltip:hover::after {
+            content: attr(data-tip);
+            position: absolute;
+            bottom: 100%;
+            right: 0;
+            background: #333;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            z-index: 100;
+            margin-bottom: 5px;
+        }
+
+        /* Sections */
+        .section {
+            margin-top: 20px;
+            border-top: 2px dashed #bbb;
+            padding-top: 20px;
+        }
+
+        .section-title {
+            color: #c0392b;
+            font-weight: 700;
+            margin-bottom: 15px;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title span {
+            color: #777;
+            font-weight: normal;
+            font-size: 0.85rem;
+        }
+
+        /* Options Grid */
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: white;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+
+        .option-item input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+            accent-color: #27ae60;
+        }
+
+        .option-item label {
+            flex: 1;
+            font-size: 0.9rem;
+            color: #444;
+            cursor: pointer;
+        }
+
+        .option-item input[type="number"] {
+            width: 50px;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        /* Mensal/Carteira Grid */
+        .item-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .item-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: white;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+
+        .item-row input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: #27ae60;
+        }
+
+        .item-row label {
+            flex: 1;
+            font-size: 0.9rem;
+            color: #444;
+        }
+
+        .item-row input[type="number"] {
+            width: 60px;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        /* Cash Events */
+        .cash-event {
+            background: white;
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+        }
+
+        .cash-event-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .cash-event-header input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #27ae60;
+        }
+
+        .cash-event-header label {
+            flex: 1;
+            font-weight: 600;
+            color: #444;
+            cursor: pointer;
+        }
+
+        .cash-input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            display: none;
+        }
+
+        .cash-input.active {
+            display: block;
+        }
+
+        /* Buttons */
+        .buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-calc {
+            background: #27ae60;
+            color: white;
+        }
+
+        .btn-calc:hover {
+            background: #229954;
+        }
+
+        .btn-reset {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-reset:hover {
+            background: #c0392b;
+        }
+
+        /* Mode Toggle */
+        .mode-toggle {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .mode-toggle label {
+            font-weight: 600;
+            color: #555;
+        }
+
+        .mode-toggle select {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 0.95rem;
+            cursor: pointer;
+        }
+
+        /* Breakdown Panel */
+        .breakdown {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            margin-top: 20px;
+        }
+
+        .breakdown h3 {
+            margin-bottom: 12px;
+            color: #2c3e50;
+            font-size: 1rem;
+        }
+
+        .breakdown-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px solid #eee;
+            font-size: 0.9rem;
+        }
+
+        .breakdown-item:last-child {
+            border-bottom: none;
+            font-weight: 700;
+            color: #27ae60;
+            font-size: 1.1rem;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 2px solid #27ae60;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: #777;
+            font-size: 0.9rem;
+        }
+
+        .footer a {
+            color: #2980b9;
+            text-decoration: none;
+        }
+
+        /* Hidden */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Info box */
+        .info-box {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Calculadora De Cupons 💸</h1>
+        <div class="lang-switch">
+            <button class="lang-btn active">BR</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Left Column -->
+        <div class="card">
+            <div class="mode-toggle">
+                <label>Modo:</label>
+                <select id="calcMode">
+                    <option value="RESOURCES">⏳ Calcular Tempo Necessário</option>
+                    <option value="TIME">💰 Calcular Cupons em Data</option>
+                </select>
+            </div>
+
+            <form id="cupomForm">
+                <div class="input-row">
+                    <label for="quantidade">Quantidade Atual</label>
+                    <input type="number" id="quantidade" placeholder="0" min="0" value="0">
+                </div>
+
+                <div class="input-row">
+                    <label for="desejados" id="labelDesejados">Cupons Desejados</label>
+                    <input type="number" id="desejados" placeholder="Ex: 110000" min="0">
+                </div>
+
+                <div class="input-row">
+                    <label for="tempo" id="labelTempo">Tempo Necessário</label>
+                    <input type="text" id="tempo" readonly placeholder="Aguardando cálculo...">
+                    <span class="tooltip" id="tempoTooltip" data-tip="Clique em Calcular para ver o detalhamento">ⓘ</span>
+                </div>
+
+                <!-- Configurações -->
+                <div class="section">
+                    <div class="section-title">⚙️ Configurações</div>
+                    
+                    <div class="input-row">
+                        <label for="medalha">Medalha</label>
+                        <select id="medalha" style="flex: 1; border: 1px solid #ddd; padding: 5px; border-radius: 4px;">
+                            <option value="none">Nenhuma</option>
+                            <option value="gennin">Genin (+10/dia, +10/semana)</option>
+                            <option value="chunnin">Chunnin (+15/dia, +15/semana)</option>
+                            <option value="jounnin">Jounnin (+20/dia, +20/semana)</option>
+                        </select>
+                    </div>
+
+                    <div class="input-row">
+                        <label for="pergaminho">Pergaminho</label>
+                        <select id="pergaminho" style="flex: 1; border: 1px solid #ddd; padding: 5px; border-radius: 4px;">
+                            <option value="basico">Básico</option>
+                            <option value="avancado">Avançado (1800 cupons/trimestre)</option>
+                        </select>
+                    </div>
+
+                    <div class="input-row">
+                        <label for="arvore">Nível Árvore (1-12)</label>
+                        <input type="number" id="arvore" min="1" max="12" placeholder="Ex: 5">
+                    </div>
+                </div>
+
+                <!-- Ilusões -->
+                <div class="section">
+                    <div class="section-title">👁️ Ranking Ilusões <span>(Segundas-feiras)</span></div>
+                    <div class="options-grid">
+                        <div class="option-item">
+                            <label>Perseguição:</label>
+                            <input type="number" id="ilusaoPers" min="1" value="1" style="width: 60px;">
+                        </div>
+                        <div class="option-item">
+                            <label>ESO:</label>
+                            <input type="number" id="ilusaoESO" min="1" value="1" style="width: 60px;">
+                        </div>
+                        <div class="option-item" style="grid-column: 1 / -1;">
+                            <label>Ataque Básico:</label>
+                            <input type="number" id="ilusaoAtaqueBasico" min="1" value="1" style="width: 60px;">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Eventos Únicos -->
+                <div class="section">
+                    <div class="section-title">🎁 Eventos Únicos</div>
+                    <div class="option-item" style="margin-bottom: 10px;">
+                        <input type="checkbox" id="investimentoNivel">
+                        <label for="investimentoNivel">Investimento de Nível (888 lingotes + medalha) - 6288 cupons</label>
+                    </div>
+                    <div class="option-item">
+                        <input type="checkbox" id="voltaAulas">
+                        <label for="voltaAulas">Presente Volta às Aulas - 2400 cupons</label>
+                    </div>
+                </div>
+
+                <div class="buttons">
+                    <button type="submit" class="btn btn-calc">Calcular</button>
+                    <button type="reset" class="btn btn-reset">Restabelecer</button>
+                </div>
+
+                <!-- Breakdown -->
+                <div class="breakdown hidden" id="breakdownPanel">
+                    <h3>📊 Detalhamento dos Cupons</h3>
+                    <div id="breakdownContent"></div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Right Column -->
+        <div class="card">
+            <!-- Diários -->
+            <div class="section" style="margin-top: 0; border-top: none; padding-top: 0;">
+                <div class="section-title">📅 Eventos Diários</div>
+                <div class="options-grid">
+                    <div class="option-item">
+                        <input type="checkbox" id="login1h" checked>
+                        <label for="login1h">Login 1 Hora (10)</label>
+                    </div>
+                    <div class="option-item">
+                        <input type="checkbox" id="roletaGuild">
+                        <label for="roletaGuild">Roleta Guild (40)</label>
+                    </div>
+                    <div class="option-item">
+                        <input type="checkbox" id="testeSobrevivencia" checked>
+                        <label for="testeSobrevivencia">Teste Sobrevivência (2)</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Transporte -->
+            <div class="section">
+                <div class="section-title">🚚 Transporte & Saque <span>(Máx 3 total - 130 cupons/dia)</span></div>
+                <div class="options-grid">
+                    <div class="option-item">
+                        <label>Transporte (40):</label>
+                        <input type="number" id="transporte" min="0" max="3" value="0">
+                    </div>
+                    <div class="option-item">
+                        <label>Saque (50):</label>
+                        <input type="number" id="saque" min="0" max="3" value="0">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mensal -->
+            <div class="section">
+                <div class="section-title">📦 Cartão Mensal <span>(Valores corrigidos)</span></div>
+                <div class="item-grid">
+                    <div class="item-row">
+                        <input type="checkbox" id="mensal300">
+                        <label for="mensal300">300 lingotes</label>
+                        <input type="number" id="qtdMensal300" value="0" min="0" title="Quantidade">
+                    </div>
+                    <div class="item-row">
+                        <input type="checkbox" id="mensal600">
+                        <label for="mensal600">600 lingotes</label>
+                        <input type="number" id="qtdMensal600" value="0" min="0" title="Quantidade">
+                    </div>
+                </div>
+                <div class="info-box" style="margin-top: 10px;">
+                    Mensal 300: 350 inicial + 50/dia (total 1850)<br>
+                    Mensal 600: 700 inicial + 100/dia (total 3700)
+                </div>
+            </div>
+
+            <!-- Carteiras -->
+            <div class="section">
+                <div class="section-title">💎 Carteiras <span>(Evento semanal - valores corrigidos)</span></div>
+                <div class="item-grid">
+                    <div class="item-row">
+                        <input type="checkbox" id="carteira500">
+                        <label>500 (1700)</label>
+                        <input type="number" id="qtdCarteira500" value="0" min="0">
+                    </div>
+                    <div class="item-row">
+                        <input type="checkbox" id="carteira1000">
+                        <label>1k (2600)</label>
+                        <input type="number" id="qtdCarteira1000" value="0" min="0">
+                    </div>
+                    <div class="item-row">
+                        <input type="checkbox" id="carteira5000">
+                        <label>5k (12900)</label>
+                        <input type="number" id="qtdCarteira5000" value="0" min="0">
+                    </div>
+                    <div class="item-row">
+                        <input type="checkbox" id="carteira9000">
+                        <label>9k (22500)</label>
+                        <input type="number" id="qtdCarteira9000" value="0" min="0">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Eventos Gerais -->
+            <div class="section">
+                <div class="section-title">🎮 Eventos Semanais</div>
+                <div class="options-grid">
+                    <div class="option-item">
+                        <input type="checkbox" id="invocacaoGuild">
+                        <label for="invocacaoGuild">Invocação Guild (160)</label>
+                    </div>
+                    <div class="option-item">
+                        <input type="checkbox" id="arena_duelo">
+                        <label for="arena_duelo">Arena Duelo (1460)</label>
+                    </div>
+                    <div class="option-item">
+                        <input type="checkbox" id="martelo">
+                        <label for="martelo">Martelo (240/dia)</label>
+                    </div>
+                    <div class="option-item">
+                        <input type="checkbox" id="recrutamento_limitado">
+                        <label for="recrutamento_limitado">Recrut. Limitado (80)</label>
+                    </div>
+                    <div class="option-item">
+                        <input type="checkbox" id="lanterna_desejos">
+                        <label for="lanterna_desejos">Lanterna (50)</label>
+                    </div>
+                    <div class="option-item">
+                        <input type="checkbox" id="ajudaNinja">
+                        <label for="ajudaNinja">Ajuda Ninja (10/dia)</label>
+                    </div>
+                    <div class="option-item">
+                        <input type="checkbox" id="chaves_caverna">
+                        <label for="chaves_caverna">Chaves Caverna (150)</label>
+                    </div>
+                    <div class="option-item">
+                        <input type="checkbox" id="mobilizacao">
+                        <label for="mobilizacao">Mobilização (200)</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Eventos Cash -->
+            <div class="section">
+                <div class="section-title">💵 Eventos de Cash</div>
+                <div class="cash-event">
+                    <div class="cash-event-header">
+                        <input type="checkbox" id="semana_fuku">
+                        <label for="semana_fuku">Semana Fuku (Recarga + Ovos)</label>
+                    </div>
+                    <input type="number" id="valor_fuku" class="cash-input" placeholder="Lingotes por dia">
+                </div>
+                <div class="cash-event">
+                    <div class="cash-event-header">
+                        <input type="checkbox" id="semana_arvore">
+                        <label for="semana_arvore">Semana Árvore (Recarga + Aniv.)</label>
+                    </div>
+                    <input type="number" id="valor_arvore" class="cash-input" placeholder="Lingotes por dia">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        Feito por <strong>S848-Ventos</strong>  
+        <br><small>Valores atualizados conforme planilha oficial</small>
+    </div>
+
+    <script>
+        // Mode Toggle
+        const calcMode = document.getElementById('calcMode');
+        const labelDesejados = document.getElementById('labelDesejados');
+        const labelTempo = document.getElementById('labelTempo');
+        const inputDesejados = document.getElementById('desejados');
+        const tempoTooltip = document.getElementById('tempoTooltip');
+
+        function getTodayISO() {
+            const today = new Date();
+            return today.toISOString().split("T")[0];
+        }
+
+        calcMode.addEventListener('change', () => {
+            const isTime = calcMode.value === 'TIME';
+            
+            if (isTime) {
+                labelDesejados.textContent = 'Data Alvo';
+                inputDesejados.type = 'date';
+                inputDesejados.min = getTodayISO();
+                labelTempo.textContent = 'Total de Cupons';
+                tempoTooltip.setAttribute('data-tip', 'Cupons acumulados até a data selecionada');
+            } else {
+                labelDesejados.textContent = 'Cupons Desejados';
+                inputDesejados.type = 'number';
+                inputDesejados.removeAttribute('min');
+                labelTempo.textContent = 'Tempo Necessário';
+                tempoTooltip.setAttribute('data-tip', 'Dias necessários para atingir a meta');
+            }
+            
+            document.getElementById('tempo').value = '';
+            document.getElementById('breakdownPanel').classList.add('hidden');
+        });
+
+        // Cash Events Toggle
+        document.getElementById('semana_fuku').addEventListener('change', function() {
+            document.getElementById('valor_fuku').classList.toggle('active', this.checked);
+        });
+        document.getElementById('semana_arvore').addEventListener('change', function() {
+            document.getElementById('valor_arvore').classList.toggle('active', this.checked);
+        });
+
+        // Transporte/Saque Validation
+        const transporteInput = document.getElementById("transporte");
+        const saqueInput = document.getElementById("saque");
+
+        function validateTransporteSaque() {
+            let transporte = parseInt(transporteInput.value) || 0;
+            let saque = parseInt(saqueInput.value) || 0;
+
+            if (transporte + saque > 3) {
+                if (document.activeElement === transporteInput) {
+                    saqueInput.value = Math.max(0, 3 - transporte);
+                } else {
+                    transporteInput.value = Math.max(0, 3 - saque);
+                }
+            }
+        }
+
+        transporteInput.addEventListener("input", validateTransporteSaque);
+        saqueInput.addEventListener("input", validateTransporteSaque);
+
+        // Form Calculation with CORRECTED VALUES
+        document.getElementById('cupomForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Validation
+            const quantidade = parseInt(document.getElementById('quantidade').value) || 0;
+            const desejadosVal = inputDesejados.value;
+            
+            if (!desejadosVal || isNaN(quantidade)) {
+                alert('Preencha todos os campos obrigatórios!');
+                return;
+            }
+
+            if (calcMode.value === 'TIME') {
+                const targetDate = new Date(desejadosVal);
+                const today = new Date();
+                today.setHours(0,0,0,0);
+                if (targetDate < today) {
+                    alert('A data deve ser hoje ou futura!');
+                    return;
+                }
+            } else {
+                const desejados = parseInt(desejadosVal);
+                if (quantidade > desejados) {
+                    alert('Quantidade atual não pode ser maior que a desejada!');
+                    return;
+                }
+            }
+
+            // ALL CONFIGURATIONS WITH CORRECTED VALUES FROM SPREADSHEET
+            const startDate = new Date('2025/05/8');
+            const today = new Date();
+            const arenaDueloStart = new Date('2025/05/29');
+            const pergaminhoCrescimentoStart = new Date('2025/06/05');
+
+            let valorTotal = quantidade;
+            let simDay = new Date(today);
+            
+            // CORRECTED: Medalha values (Chunnin 15/dia, Jounnin 20/dia + weekly)
+            const medalha = document.getElementById('medalha').value;
+            let bonusMedalhaDiario = 0;
+            let bonusMedalhaSemanal = 0;
+            
+            switch(medalha) {
+                case 'gennin': 
+                    bonusMedalhaDiario = 10; 
+                    bonusMedalhaSemanal = 10;
+                    break;
+                case 'chunnin': 
+                    bonusMedalhaDiario = 15; 
+                    bonusMedalhaSemanal = 15;
+                    break;
+                case 'jounnin': 
+                    bonusMedalhaDiario = 20; 
+                    bonusMedalhaSemanal = 20;
+                    break;
+            }
+            
+            // Pergaminho (1800 every 56 days ≈ quarterly)
+            const pergaminho = document.getElementById('pergaminho').value;
+            const bonusPergaminho = pergaminho === 'avancado' ? 1800 : 0;
+            
+            // Árvore (corrected: level 1 = 3, level 12 = 25)
+            const arvore = parseInt(document.getElementById('arvore').value) || 0;
+            // Formula: (nivel * 2) + 1 = 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25
+            
+            // Ilusões (corrected values from spreadsheet)
+            const ilusaoPers = parseInt(document.getElementById('ilusaoPers').value) || 0;
+            const ilusaoESO = parseInt(document.getElementById('ilusaoESO').value) || 0;
+            const ilusaoAtaqueBasico = parseInt(document.getElementById('ilusaoAtaqueBasico').value) || 0;
+
+            // CORRECTED: Mensal values (350/700 initial + daily)
+            let mensal300 = parseInt(document.getElementById('qtdMensal300').value) || 0;
+            let mensal600 = parseInt(document.getElementById('qtdMensal600').value) || 0;
+            let mensal300Dias = 0, mensal600Dias = 0;
+            
+            // CORRECTED: Carteiras (500: 1700, 1000: 2600, 5000: 12900, 9000: 22500)
+            let carteira500 = parseInt(document.getElementById('qtdCarteira500').value) || 0;
+            let carteira1000 = parseInt(document.getElementById('qtdCarteira1000').value) || 0;
+            let carteira5000 = parseInt(document.getElementById('qtdCarteira5000').value) || 0;
+            let carteira9000 = parseInt(document.getElementById('qtdCarteira9000').value) || 0;
+            let carteira500Dias = 0, carteira1000Dias = 0, carteira5000Dias = 0, carteira9000Dias = 0;
+
+            // Transporte/Saque (corrected: 40 transporte, 50 saque, max 3 = 130)
+            const transporte = parseInt(document.getElementById('transporte').value) || 0;
+            const saque = parseInt(document.getElementById('saque').value) || 0;
+
+            // Eventos Gerais (corrected values)
+            const arenaDuelo = document.getElementById('arena_duelo').checked ? 1460 : 0; // 460 + 1000
+            const mobilizacao = document.getElementById('mobilizacao').checked ? 200 : 0;
+            const marteloDia = document.getElementById('martelo').checked ? 240 : 0;
+            const marteloSemana = document.getElementById('martelo').checked ? 100 : 0; // Grande Roleta
+            const chavesCaverna = document.getElementById('chaves_caverna').checked ? 150 : 0;
+            const lanternaDesejos = document.getElementById('lanterna_desejos').checked ? 50 : 0;
+            const recrutamentoLimitado = document.getElementById('recrutamento_limitado').checked ? 80 : 0;
+            const ajudaNinja = document.getElementById('ajudaNinja').checked ? 10 : 0; // 10/dia = 100/month
+
+            // Eventos únicos
+            const investimentoNivel = document.getElementById('investimentoNivel').checked ? 6288 : 0;
+            const voltaAulas = document.getElementById('voltaAulas').checked ? 2400 : 0;
+
+            // Cash
+            const valorFukuDia = document.getElementById('semana_fuku').checked ? (parseInt(document.getElementById('valor_fuku').value) || 0) : 0;
+            const valorArvoreDia = document.getElementById('semana_arvore').checked ? (parseInt(document.getElementById('valor_arvore').value) || 0) : 0;
+
+            // Tracking
+            let cuponsPorFonte = {
+                checkin: 0, eventos_diarios: 0, mensal: 0, ilusao: 0,
+                eventos_limitados: 0, arena_duelo: 0, carteira: 0,
+                pergaminho: 0, cash: 0, unicos: 0
+            };
+
+            // Add one-time events immediately
+            if (investimentoNivel > 0) {
+                valorTotal += investimentoNivel;
+                cuponsPorFonte.unicos += investimentoNivel;
+            }
+            if (voltaAulas > 0) {
+                valorTotal += voltaAulas;
+                cuponsPorFonte.unicos += voltaAulas;
+            }
+
+            // Target date for TIME mode
+            let targetDate = null;
+            if (calcMode.value === 'TIME') {
+                targetDate = new Date(desejadosVal);
+                targetDate.setHours(23,59,59,999);
+            }
+
+            // SIMULATION LOOP with CORRECTED VALUES
+            do {
+                let simDiffTime = Math.abs(simDay - startDate);
+                let simDiffDays = Math.floor(simDiffTime / (1000 * 60 * 60 * 24));
+                let simWichWeek = Math.floor((simDiffDays / 7) % 4);
+                let simMonthNumberOfDays = new Date(simDay.getFullYear(), simDay.getMonth() + 1, 0).getDate();
+
+                // Daily Events (corrected values)
+                // Login 1h = 10, Teste Sobrevivência = 2, Roleta Guild = 40
+                if (document.getElementById('login1h').checked) {
+                    valorTotal += 10;
+                    cuponsPorFonte.eventos_diarios += 10;
+                }
+                if (document.getElementById('testeSobrevivencia').checked) {
+                    valorTotal += 2;
+                    cuponsPorFonte.eventos_diarios += 2;
+                }
+                if (document.getElementById('roletaGuild').checked) {
+                    valorTotal += 40;
+                    cuponsPorFonte.eventos_diarios += 40;
+                }
+                
+                // Medalha diária (corrected)
+                valorTotal += bonusMedalhaDiario;
+                cuponsPorFonte.eventos_diarios += bonusMedalhaDiario;
+                
+                // Árvore (corrected formula)
+                if (arvore > 0) {
+                    const arvoreCupons = (arvore * 2) + 1;
+                    valorTotal += arvoreCupons;
+                    cuponsPorFonte.eventos_diarios += arvoreCupons;
+                }
+
+                // Transporte (40 cada) + Saque (50 cada)
+                valorTotal += 40 * transporte;
+                cuponsPorFonte.eventos_diarios += 40 * transporte;
+                valorTotal += 50 * saque;
+                cuponsPorFonte.eventos_diarios += 50 * saque;
+
+                // Ajuda Ninja (10/dia)
+                if (ajudaNinja > 0) {
+                    valorTotal += 10;
+                    cuponsPorFonte.eventos_limitados += 10;
+                }
+
+                // CORRECTED: Mensal (350/700 initial + 50/100 daily)
+                if (mensal300 > 0 && mensal300Dias === 0) {
+                    mensal300--;
+                    mensal300Dias = 30;
+                    valorTotal += 350; // Initial
+                    cuponsPorFonte.mensal += 350;
+                }
+                if (mensal300Dias > 0) {
+                    valorTotal += 50; // Daily
+                    cuponsPorFonte.mensal += 50;
+                    mensal300Dias--;
+                }
+
+                if (mensal600 > 0 && mensal600Dias === 0) {
+                    mensal600--;
+                    mensal600Dias = 30;
+                    valorTotal += 700; // Initial
+                    cuponsPorFonte.mensal += 700;
+                }
+                if (mensal600Dias > 0) {
+                    valorTotal += 100; // Daily
+                    cuponsPorFonte.mensal += 100;
+                    mensal600Dias--;
+                }
+
+                // Arena Duelo (every 63 days: 460 + 1000 = 1460)
+                if (arenaDuelo > 0) {
+                    const diffArena = Math.floor((simDay - arenaDueloStart) / (1000 * 60 * 60 * 24));
+                    if (diffArena >= 0 && diffArena % 63 === 0) {
+                        valorTotal += 1460;
+                        cuponsPorFonte.arena_duelo += 1460;
+                    }
+                }
+
+                // Pergaminho (every 56 days: 1800)
+                if (bonusPergaminho > 0) {
+                    const diffPergaminho = Math.floor((simDay - pergaminhoCrescimentoStart) / (1000 * 60 * 60 * 24));
+                    if (diffPergaminho >= 0 && diffPergaminho % 56 === 0) {
+                        valorTotal += 1800;
+                        cuponsPorFonte.pergaminho += 1800;
+                    }
+                }
+
+                // CORRECTED: Ilusões (Monday only - values from spreadsheet)
+                if (simDay.getDay() === 1) {
+                    const getIlusaoReward = (rank) => {
+                        if (rank === 1) return 2400; // Top 1
+                        if (rank === 2) return 2100; // Top 2
+                        if (rank === 3) return 1800; // Top 3
+                        if (rank <= 10) return 1200; // Top 10
+                        if (rank <= 20) return 1050; // Top 20
+                        if (rank <= 50) return 960;  // Average
+                        if (rank <= 100) return 900; // Top 100
+                        return 750; // Below 100
+                    };
+                    
+                    const reward = getIlusaoReward(ilusaoPers) + getIlusaoReward(ilusaoESO) + getIlusaoReward(ilusaoAtaqueBasico);
+                    valorTotal += reward;
+                    cuponsPorFonte.ilusao += reward;
+                }
+
+                // Saturday - Invocação Guild (160) + Medalha semanal
+                if (simDay.getDay() === 6) {
+                    if (document.getElementById('invocacaoGuild').checked) {
+                        valorTotal += 160;
+                        cuponsPorFonte.eventos_diarios += 160;
+                    }
+                    // Medalha semanal (corrected)
+                    valorTotal += bonusMedalhaSemanal;
+                    cuponsPorFonte.eventos_diarios += bonusMedalhaSemanal;
+                }
+
+                // Check-in (corrected values from spreadsheet)
+                const dayOfMonth = simDay.getDate();
+                if (dayOfMonth === 2) { valorTotal += 10; cuponsPorFonte.checkin += 10; }
+                else if (dayOfMonth === 5) { valorTotal += 20; cuponsPorFonte.checkin += 20; }
+                else if (dayOfMonth === 10) { valorTotal += 30; cuponsPorFonte.checkin += 30; }
+                else if (dayOfMonth === 17) { valorTotal += 40; cuponsPorFonte.checkin += 40; }
+                else if (dayOfMonth === 26) { valorTotal += 50; cuponsPorFonte.checkin += 50; }
+                else if (dayOfMonth === simMonthNumberOfDays) { valorTotal += 100; cuponsPorFonte.checkin += 100; }
+
+                // Week 0 - Fuku
+                if (simWichWeek === 0) {
+                    if (simDay.getDay() === 4) {
+                        valorTotal += 80 + chavesCaverna + 500;
+                        cuponsPorFonte.eventos_limitados += 80 + chavesCaverna + 500;
+                    }
+                    if (valorFukuDia > 0) {
+                        const recarga = Math.min(valorFukuDia, 20000);
+                        const ovos = Math.min(valorFukuDia, 5000);
+                        const total = (recarga * 300 / 1000) + (ovos * 250 / 1000);
+                        valorTotal += total;
+                        cuponsPorFonte.cash += total;
+                        if (valorFukuDia >= 500) {
+                            valorTotal += 200;
+                            cuponsPorFonte.cash += 200;
+                        }
+                    }
+                }
+                // Week 1 - Raspadinha
+                else if (simWichWeek === 1) {
+                    // Ajuda Ninja already counted daily
+                    valorTotal += lanternaDesejos;
+                    cuponsPorFonte.eventos_limitados += lanternaDesejos;
+                    if (simDay.getDay() === 4) {
+                        valorTotal += recrutamentoLimitado;
+                        cuponsPorFonte.eventos_limitados += recrutamentoLimitado;
+                    }
+                }
+                // Week 2 - Árvore
+                else if (simWichWeek === 2) {
+                    valorTotal += marteloDia;
+                    if (simDay.getDay() === 4) {
+                        valorTotal += mobilizacao + marteloSemana + 240;
+                        cuponsPorFonte.eventos_limitados += mobilizacao + marteloSemana + 240;
+                    }
+                    if (valorArvoreDia > 0) {
+                        const recarga = Math.min(valorArvoreDia, 20000);
+                        const totalRecarga = (recarga * 300 / 1000);
+                        valorTotal += totalRecarga;
+                        cuponsPorFonte.cash += totalRecarga;
+                        
+                        const aniversario = Math.min(valorArvoreDia * 7, 100000) * 0.2;
+                        valorTotal += aniversario;
+                        cuponsPorFonte.cash += aniversario;
+                        
+                        if (valorArvoreDia >= 500) {
+                            valorTotal += 200;
+                            cuponsPorFonte.cash += 200;
+                        }
+                    }
+                }
+                // Week 3 - Carteira (CORRECTED values)
+                else if (simWichWeek === 3) {
+                    // Daily carteira (corrected values)
+                    // 500: 200/dia, 1000: 300/dia, 5000: 1400/dia, 9000: 2500/dia
+                    if (carteira500Dias > 0) { valorTotal += 200; carteira500Dias--; cuponsPorFonte.carteira += 200; }
+                    if (carteira1000Dias > 0) { valorTotal += 300; carteira1000Dias--; cuponsPorFonte.carteira += 300; }
+                    if (carteira5000Dias > 0) { valorTotal += 1400; carteira5000Dias--; cuponsPorFonte.carteira += 1400; }
+                    if (carteira9000Dias > 0) { valorTotal += 2500; carteira9000Dias--; cuponsPorFonte.carteira += 2500; }
+
+                    if (simDay.getDay() === 4) {
+                        // Initial payment (corrected)
+                        if (carteira500 > 0) { carteira500--; valorTotal += 500; cuponsPorFonte.carteira += 500; carteira500Dias = 6; }
+                        if (carteira1000 > 0) { carteira1000--; valorTotal += 1000; cuponsPorFonte.carteira += 1000; carteira1000Dias = 6; }
+                        if (carteira5000 > 0) { carteira5000--; valorTotal += 5000; cuponsPorFonte.carteira += 5000; carteira5000Dias = 6; }
+                        if (carteira9000 > 0) { carteira9000--; valorTotal += 9000; cuponsPorFonte.carteira += 9000; carteira9000Dias = 6; }
+                    }
+
+                    // Activate carteiras on other days if needed
+                    const activateCarteira = (count, currentDias, dayOfWeek) => {
+                        if (count > 0 && currentDias === 0 && dayOfWeek !== 3) {
+                            if (dayOfWeek === 5) return 5;
+                            if (dayOfWeek === 6) return 4;
+                            if (dayOfWeek === 0) return 3;
+                            if (dayOfWeek === 1) return 2;
+                            if (dayOfWeek === 2) return 1;
+                        }
+                        return currentDias;
+                    };
+
+                    const dayOfWeek = simDay.getDay();
+                    if (carteira500 > 0 && carteira500Dias === 0 && dayOfWeek !== 3) carteira500Dias = activateCarteira(carteira500, 0, dayOfWeek);
+                    if (carteira1000 > 0 && carteira1000Dias === 0 && dayOfWeek !== 3) carteira1000Dias = activateCarteira(carteira1000, 0, dayOfWeek);
+                    if (carteira5000 > 0 && carteira5000Dias === 0 && dayOfWeek !== 3) carteira5000Dias = activateCarteira(carteira5000, 0, dayOfWeek);
+                    if (carteira9000 > 0 && carteira9000Dias === 0 && dayOfWeek !== 3) carteira9000Dias = activateCarteira(carteira9000, 0, dayOfWeek);
+                }
+
+                simDay.setDate(simDay.getDate() + 1);
+            } while ((calcMode.value === 'RESOURCES' && valorTotal < parseInt(desejadosVal)) || 
+                     (calcMode.value === 'TIME' && simDay <= targetDate));
+
+            // Results
+            const totalDays = Math.floor((simDay - today) / (1000 * 60 * 60 * 24));
+            
+            if (calcMode.value === 'RESOURCES') {
+                const meses = (totalDays / 30).toFixed(2);
+                document.getElementById('tempo').value = `${totalDays} Dias (${meses} Meses)`;
+            } else {
+                document.getElementById('tempo').value = `${Math.floor(valorTotal).toLocaleString('pt-BR')} Cupons`;
+            }
+
+            // Show Breakdown
+            const breakdownPanel = document.getElementById('breakdownPanel');
+            const breakdownContent = document.getElementById('breakdownContent');
+            breakdownPanel.classList.remove('hidden');
+            
+            let html = '';
+            if (cuponsPorFonte.checkin > 0) html += `<div class="breakdown-item"><span>📅 Check-in</span><span>${cuponsPorFonte.checkin.toLocaleString('pt-BR')}</span></div>`;
+            if (cuponsPorFonte.eventos_diarios > 0) html += `<div class="breakdown-item"><span>📋 Eventos Diários</span><span>${Math.floor(cuponsPorFonte.eventos_diarios).toLocaleString('pt-BR')}</span></div>`;
+            if (cuponsPorFonte.mensal > 0) html += `<div class="breakdown-item"><span>📦 Mensal</span><span>${cuponsPorFonte.mensal.toLocaleString('pt-BR')}</span></div>`;
+            if (cuponsPorFonte.ilusao > 0) html += `<div class="breakdown-item"><span>👁️ Ilusões</span><span>${cuponsPorFonte.ilusao.toLocaleString('pt-BR')}</span></div>`;
+            if (cuponsPorFonte.eventos_limitados > 0) html += `<div class="breakdown-item"><span>🎁 Eventos Limitados</span><span>${Math.floor(cuponsPorFonte.eventos_limitados).toLocaleString('pt-BR')}</span></div>`;
+            if (cuponsPorFonte.arena_duelo > 0) html += `<div class="breakdown-item"><span>⚔️ Arena Duelo</span><span>${cuponsPorFonte.arena_duelo.toLocaleString('pt-BR')}</span></div>`;
+            if (cuponsPorFonte.carteira > 0) html += `<div class="breakdown-item"><span>💎 Carteiras</span><span>${cuponsPorFonte.carteira.toLocaleString('pt-BR')}</span></div>`;
+            if (cuponsPorFonte.pergaminho > 0) html += `<div class="breakdown-item"><span>📜 Pergaminho</span><span>${cuponsPorFonte.pergaminho.toLocaleString('pt-BR')}</span></div>`;
+            if (cuponsPorFonte.cash > 0) html += `<div class="breakdown-item"><span>💰 Eventos Cash</span><span>${Math.floor(cuponsPorFonte.cash).toLocaleString('pt-BR')}</span></div>`;
+            if (cuponsPorFonte.unicos > 0) html += `<div class="breakdown-item"><span>🎁 Eventos Únicos</span><span>${cuponsPorFonte.unicos.toLocaleString('pt-BR')}</span></div>`;
+            
+            const total = Object.values(cuponsPorFonte).reduce((a, b) => a + b, 0);
+            html += `<div class="breakdown-item"><span>TOTAL</span><span>${Math.floor(total).toLocaleString('pt-BR')}</span></div>`;
+            
+            breakdownContent.innerHTML = html;
+        });
+
+        // Reset
+        document.querySelector('.btn-reset').addEventListener('click', () => {
+            document.getElementById('tempo').value = '';
+            document.getElementById('breakdownPanel').classList.add('hidden');
+            document.querySelectorAll('.cash-input').forEach(i => i.classList.remove('active'));
+            calcMode.value = 'RESOURCES';
+            labelDesejados.textContent = 'Cupons Desejados';
+            inputDesejados.type = 'number';
+            labelTempo.textContent = 'Tempo Necessário';
+        });
+    </script>
+</body>
+</html>
